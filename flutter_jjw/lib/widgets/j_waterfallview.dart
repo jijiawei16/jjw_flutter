@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 /*
-* 如果无法滑动,尝试在item外层套一层Builder,这个问题待解决!
+* 如果滑动方法失效,尝试在item外层套一层Builder,这个问题待解决!
 * */
 typedef Item = Widget Function(int index);
 
-class JWaterfall extends StatefulWidget {
+class JWaterfallView extends StatefulWidget {
   // item之间的间距
   final double margin;
   // 控件高度
@@ -22,7 +22,7 @@ class JWaterfall extends StatefulWidget {
   // 底层颜色
   final Color color;
 
-  JWaterfall({
+  JWaterfallView({
     Key key,
     this.margin = 10.0,
     this.height,
@@ -35,15 +35,15 @@ class JWaterfall extends StatefulWidget {
         assert(count != null, '需要设置item的数量'),
         super(key: key);
 
-  static _JWaterfallState of(BuildContext context) {
-    return context.ancestorStateOfType(const TypeMatcher<_JWaterfallState>());
+  static _JWaterfallViewState of(BuildContext context) {
+    return context.ancestorStateOfType(const TypeMatcher<_JWaterfallViewState>());
   }
 
   @override
-  _JWaterfallState createState() => _JWaterfallState();
+  _JWaterfallViewState createState() => _JWaterfallViewState();
 }
 
-class _JWaterfallState extends State<JWaterfall> {
+class _JWaterfallViewState extends State<JWaterfallView> {
   List<Widget> items;
   double _scrollHeight = 0.0;
   double itemWidth;
@@ -117,7 +117,7 @@ class JWaterfallDelegate extends FlowDelegate {
   double width;
   double margin;
   int lines;
-  _JWaterfallState state;
+  _JWaterfallViewState state;
   List<double> heights;
 
   JWaterfallDelegate({
