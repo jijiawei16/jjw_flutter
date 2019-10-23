@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 typedef RowItem        = Widget Function(IndexPath indexPath);
 typedef RowCount       = int    Function(int section);
 typedef SectionItem    = Widget Function(IndexPath indexPath);
-typedef SectionCount   = int    Function();
 typedef SectionSpread  = bool   Function(int section);
 
-class JTable extends StatefulWidget {
+class JListView extends StatefulWidget {
 
   // 当前控件高度
   final double height;
@@ -24,7 +23,7 @@ class JTable extends StatefulWidget {
   final SectionItem section;
 
   // List的section的数量
-  final SectionCount sectionCount;
+  final int sectionCount;
 
   // 当前section的展开状态(默认true)
   final SectionSpread sectionSpread;
@@ -32,28 +31,29 @@ class JTable extends StatefulWidget {
   // section是否自动展开收起(默认false)
   final bool autoSpread;
 
+  // 背景颜色
+  final Color color;
 
-
-  BaseTable({
+  JListView({
     Key key,
     this.height,
     this.width,
     this.row,
     this.rowCount,
     this.section,
-    this.sectionCount,
+    this.sectionCount = 1,
     this.sectionSpread,
     this.autoSpread,
+    this.color = Colors.black12,
   }):   assert(row != null, '需要通过调用row来创建item'),
         assert(rowCount != null, '需要通过rowCount来设置当前section的row的数量'),
-        assert(sectionCount != null, '需要通过section来设置section的数量'),
         super(key: key);
 
   @override
-  _BaseTableState createState() => _BaseTableState();
+  _JListViewState createState() => _JListViewState();
 }
 
-class _BaseTableState extends State<BaseTable> {
+class _JListViewState extends State<JListView> {
   List<IndexPath> indexPaths;
   List<bool> isSpreads;
   bool autoSpread;
@@ -79,7 +79,7 @@ class _BaseTableState extends State<BaseTable> {
     indexPaths = List();
 
     // 获取section的数量
-    int sections = widget.sectionCount();
+    int sections = widget.sectionCount;
 
     // 判断是否缓存了展开状态数据
     bool isNull = isSpreads.length == 0;
@@ -135,6 +135,7 @@ class _BaseTableState extends State<BaseTable> {
     return Container(
       width: width,
       height: height,
+      color: widget.color,
       child: ListView.builder(
         itemCount: indexPaths.length,
         itemBuilder: (context, index) {
@@ -142,7 +143,7 @@ class _BaseTableState extends State<BaseTable> {
           // 获取到当前item对应的indexPath
           IndexPath currentIndexPath = indexPaths[index];
 
-          // 根据indePath的row属性来判断section/row
+          // 根据indexPath的row属性来判断section/row
           if (currentIndexPath .row == -1) {
             return GestureDetector(
               onTap: () {

@@ -5,9 +5,13 @@ class Mine extends StatefulWidget {
   _MineState createState() => _MineState();
 }
 
-class _MineState extends State<Mine> {
+class _MineState extends State<Mine> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return Container();
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

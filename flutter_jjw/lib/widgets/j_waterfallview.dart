@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-/*
-* 如果滑动方法失效,尝试在item外层套一层Builder,这个问题待解决!
-* */
-typedef Item = Widget Function(int index);
+typedef Item = Widget Function(BuildContext context, int index);
 
 class JWaterfallView extends StatefulWidget {
   // item之间的间距
@@ -79,9 +76,13 @@ class _JWaterfallViewState extends State<JWaterfallView> {
     if (items == null) {
       items = List();
       for (int i = 0; i< widget.count; i++) {
-        items.add(SizedBox(
-          width: itemWidth,
-          child: widget.item(i),
+        items.add(Builder(
+          builder: (context) {
+            return SizedBox(
+              width: itemWidth,
+              child: widget.item(context, i),
+            );
+          },
         ));
       }
     }

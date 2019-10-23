@@ -55,3 +55,10 @@ class _MainTabbarState extends State<MainTabbar> {
   }
 }
 
+/*
+自定义tabbar ✔️
+瀑布流 ✔️
+tableView
+switch ✔️
+collection
+*/
