@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-typedef RowItem        = Widget Function(IndexPath indexPath);
-typedef RowCount       = int    Function(int section);
-typedef SectionItem    = Widget Function(IndexPath indexPath);
-typedef SectionSpread  = bool   Function(int section);
+typedef JListRowItem        = Widget Function(JListIndexPath indexPath);
+typedef JListRowCount       = int    Function(int section);
+typedef JListSectionItem    = Widget Function(JListIndexPath indexPath);
+typedef JListSectionSpread  = bool   Function(int section);
 
 class JListView extends StatefulWidget {
 
@@ -14,19 +14,19 @@ class JListView extends StatefulWidget {
   final double width;
 
   // 当前row对应的item
-  final RowItem row;
+  final JListRowItem row;
 
   // 当前section对应的row的数量
-  final RowCount rowCount;
+  final JListRowCount rowCount;
 
   // 当前section对应的item
-  final SectionItem section;
+  final JListSectionItem section;
 
   // List的section的数量
   final int sectionCount;
 
   // 当前section的展开状态(默认true)
-  final SectionSpread sectionSpread;
+  final JListSectionSpread sectionSpread;
 
   // section是否自动展开收起(默认false)
   final bool autoSpread;
@@ -49,12 +49,16 @@ class JListView extends StatefulWidget {
         assert(rowCount != null, '需要通过rowCount来设置当前section的row的数量'),
         super(key: key);
 
+  static _JListViewState of(BuildContext context) {
+    return context.ancestorStateOfType(const TypeMatcher<_JListViewState>());
+  }
+
   @override
   _JListViewState createState() => _JListViewState();
 }
 
 class _JListViewState extends State<JListView> {
-  List<IndexPath> indexPaths;
+  List<JListIndexPath> indexPaths;
   List<bool> isSpreads;
   bool autoSpread;
 
@@ -87,25 +91,12 @@ class _JListViewState extends State<JListView> {
     for (int i = 0; i < sections; i++) {
 
       // 添加section对应的indexPath
-      IndexPath sectionIndexPath = IndexPath(section: i,row: -1);
+      JListIndexPath sectionIndexPath = JListIndexPath(section: i,row: -1);
       indexPaths.add(sectionIndexPath);
 
       // 获取当前section是否是展开状态,如果不展开，不添加对应的rowItems
-      bool isSpread = true;
-      if (widget.autoSpread == true) {
-        if (widget.sectionSpread == null) {
-          isSpreads.add(isSpread);
-        } else {
-          if (isNull) {
-            isSpread = widget.sectionSpread(i);
-            isSpreads.add(isSpread);
-          } else {
-            isSpread = isSpreads[i];
-          }
-        }
-      } else {
-        if (widget.sectionSpread != null) isSpread = widget.sectionSpread(i);
-      }
+      bool isSpread = widget.sectionSpread == null ? true : widget.sectionSpread(i);
+      if (widget.autoSpread == true) isNull ? isSpreads.add(isSpread) : isSpread = isSpreads[i];
       if (isSpread != true) continue;
 
       // 获取每个section对应的row的数量
@@ -114,7 +105,7 @@ class _JListViewState extends State<JListView> {
       for (int j = 0; j < rows; j++) {
 
         // 添加row对应的indexPath
-        IndexPath rowIndexPath = IndexPath(section: i,row: j);
+        JListIndexPath rowIndexPath = JListIndexPath(section: i,row: j);
         indexPaths.add(rowIndexPath);
       }
     }
@@ -141,7 +132,7 @@ class _JListViewState extends State<JListView> {
         itemBuilder: (context, index) {
 
           // 获取到当前item对应的indexPath
-          IndexPath currentIndexPath = indexPaths[index];
+          JListIndexPath currentIndexPath = indexPaths[index];
 
           // 根据indexPath的row属性来判断section/row
           if (currentIndexPath .row == -1) {
@@ -165,13 +156,15 @@ class _JListViewState extends State<JListView> {
   }
 }
 
-class IndexPath {
+class JListIndexPath {
   int section;
   int row;
+  double height;
 
-  IndexPath({
+  JListIndexPath({
     Key key,
     this.section,
     this.row,
+    this.height,
   });
 }

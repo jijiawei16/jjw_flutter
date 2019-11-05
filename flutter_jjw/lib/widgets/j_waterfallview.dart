@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+/*
+* 使用该控件做瀑布流,必须先设置好item宽高,否则绘制画面会出现问题
+* */
 typedef Item = Widget Function(BuildContext context, int index);
 
 class JWaterfallView extends StatefulWidget {
@@ -72,19 +75,16 @@ class _JWaterfallViewState extends State<JWaterfallView> {
     double width = widget.width == null ? MediaQuery.of(context).size.width : widget.width;
     itemWidth = (width-widget.margin*(widget.lines+1))/widget.lines;
 
-    // 只初始化一次
-    if (items == null) {
-      items = List();
-      for (int i = 0; i< widget.count; i++) {
-        items.add(Builder(
-          builder: (context) {
-            return SizedBox(
-              width: itemWidth,
-              child: widget.item(context, i),
-            );
-          },
-        ));
-      }
+    items = List();
+    for (int i = 0; i< widget.count; i++) {
+      items.add(Builder(
+        builder: (context) {
+          return SizedBox(
+            width: itemWidth,
+            child: widget.item(context, i),
+          );
+        },
+      ));
     }
 
     return Container(
